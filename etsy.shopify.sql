@@ -1,3 +1,5 @@
+-- This SQL project analyzes sales data from the two tables, etsyorders and shopifyorders to derive meaningful insights about the business's performance both platforms.
+
 -- Total Revenue Comparison - compares the total revenue from both Etsy and Shopify orders.
 SELECT 'Etsy' AS source, SUM(SalesTotal) AS total_revenue
 FROM etsyorders
