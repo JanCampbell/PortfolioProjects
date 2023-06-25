@@ -1,0 +1,182 @@
+""
+Required Tasks
+These are the required tasks for this project. You should aim to complete these tasks before
+adding your own ideas to the project.
+1. Read the data from the spreadsheet
+2. Collect all of the sales from each month into a single list
+3. Output the total sales across all months
+4. Output a summary of the results to a spreadsheet
+5. Calculate the following:
+  Monthly changes as a percentage
+  The average
+  Months with the highest and lowest sales
+""
+
+" 1. Read the data from the spreadsheet" 
+
+import pandas as pd
+
+def read_data():
+    data = pd.read_csv('sales.csv')
+    return data
+
+data = read_data()
+
+print(data)
+
+"2. Collect all of the sales from each month into a single list"
+
+import csv 
+
+  
+def read_data(): 
+
+    data = [] 
+
+    with open('sales.csv', 'r') as sales_csv: 
+
+        spreadsheet = csv.DictReader(sales_csv) 
+
+        for row in spreadsheet: 
+
+            data.append(row) 
+
+    return data 
+
+  
+
+def collect_monthly_sales(data): 
+
+    monthly_sales = [] 
+
+    for row in data: 
+
+        month = row['month'] 
+
+        try: 
+
+            sales = float(row['sales']) 
+
+            monthly_sales.append((month, sales)) 
+
+        except ValueError: 
+
+            print(f"Invalid sales value for month: {month}") 
+
+    return monthly_sales 
+
+  
+
+def run(): 
+
+    data = read_data() 
+
+    monthly_sales = collect_monthly_sales(data) 
+
+    for month, sales in monthly_sales: 
+
+        print(f"Sales for {month}: {sales}") 
+
+  
+
+run() 
+
+
+
+"3. Output the total sales across all months" 
+
+import csv
+
+def read_data():
+    data = []
+    with open('sales.csv', 'r') as sales_csv:
+        spreadsheet = csv.DictReader(sales_csv)
+        for row in spreadsheet:
+            data.append(row)
+    return data
+
+def run():
+    data = read_data()
+    sales = []
+    for row in data:
+        sale = int(row['sales'])
+        sales.append(sale)
+    total = sum(sales)
+    print('Total sales: {}'.format(total))
+
+run()
+
+
+"4&5. Output a summary of the results to a spreadsheet. Calculate Monthly changes as a percentage, The average
+  Months with the highest and lowest sales""
+
+import csv
+
+def read_data():
+    data = []
+    with open('sales.csv', 'r') as sales_csv:
+        spreadsheet = csv.DictReader(sales_csv)
+        for row in spreadsheet:
+            data.append(row)
+    return data
+
+def collect_monthly_sales(data):
+    monthly_sales = []
+    for row in data:
+        month = row['month']
+        try:
+            sales = float(row['sales'])
+            monthly_sales.append((month, sales))
+        except ValueError:
+            print(f"Invalid sales value for month: {month}")
+    return monthly_sales
+
+def calculate_monthly_changes(sales_data):
+    monthly_changes = []
+    for i in range(1, len(sales_data)):
+        curr_month, curr_sales = sales_data[i]
+        prev_month, prev_sales = sales_data[i-1]
+        change = ((curr_sales - prev_sales) / prev_sales) * 100
+        monthly_changes.append((curr_month, change))
+    return monthly_changes
+
+def calculate_average_sales(sales_data):
+    total_sales = sum(sales for _, sales in sales_data)
+    average_sales = total_sales / len(sales_data)
+    return average_sales
+
+def find_highest_lowest_sales(sales_data):
+    sorted_sales = sorted(sales_data, key=lambda x: x[1])
+    lowest_month, lowest_sales = sorted_sales[0]
+    highest_month, highest_sales = sorted_sales[-1]
+    return lowest_month, lowest_sales, highest_month, highest_sales
+
+def write_summary(summary):
+    with open('sales_summary.csv', 'w', newline='') as summary_csv:
+        writer = csv.writer(summary_csv)
+        writer.writerow(['Month', 'Sales', 'Monthly Change', 'Percentage Change'])
+        for month, sales, change in summary:
+            writer.writerow([month, sales, change, f"{change:.2f}%"])
+
+def run():
+    data = read_data()
+    monthly_sales = collect_monthly_sales(data)
+    monthly_changes = calculate_monthly_changes(monthly_sales)
+    average_sales = calculate_average_sales(monthly_sales)
+    lowest_month, lowest_sales, highest_month, highest_sales = find_highest_lowest_sales(monthly_sales)
+
+    summary = []
+    for month, sales in monthly_sales:
+        change = next((percentage_change for m, percentage_change in monthly_changes if m == month), 0.0)
+        summary.append((month, sales, change))
+
+    for month, sales, change in summary:
+        print(f"Sales for {month}: {sales}, Monthly Change: {change:.2f}%")
+
+    print(f"Average Sales: {average_sales}")
+    print(f"Month with the Lowest Sales: {lowest_month} ({lowest_sales})")
+    print(f"Month with the Highest Sales: {highest_month} ({highest_sales})")
+
+    write_summary(summary)
+
+run()
